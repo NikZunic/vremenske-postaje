@@ -1,3 +1,20 @@
+// Vremenske-postaje je program, ki ustvari nabor vremenskih postaj, jim doda
+// meritve temperature ter izpiše vse meritve in poročilo za vsako postajo.
+//
+// Uporaba:
+//
+//	vremenske-postaje [stikala]
+//
+// Stikala:
+//
+//	--minTemp float
+//		najnižja dovoljena temperatura meritve v °C (privzeto -50)
+//	--maxTemp float
+//		najvišja dovoljena temperatura meritve v °C (privzeto 50)
+//	--stMeritev int
+//		najmanjše število meritev, potrebnih za izračun statistike (privzeto 3)
+//	--help, -h
+//		izpiše pomoč
 package main
 
 import (
@@ -10,6 +27,9 @@ import (
 	"github.com/urfave/cli/v3"
 )
 
+// zazeni ustvari testne postaje z meritvami ter izpiše meritve in poročilo.
+// Meritve izven intervala [minTemp, maxTemp] so zavrnjene, statistika pa se
+// izračuna le za postaje z vsaj stMeritev meritvami.
 func zazeni(minTemp, maxTemp float64, stMeritev int) {
 
 	postaje := make(map[string]vreme.Postaja)
