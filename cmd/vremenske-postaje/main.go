@@ -1,18 +1,18 @@
 package main
 
 import (
+	"context"
 	"fmt"
+	"log"
+	"os"
 
 	"github.com/NikZunic/vremenske-postaje/vreme"
+	"github.com/urfave/cli/v3"
 )
 
-func main() {
+func zazeni(minTemp, maxTemp float64, stMeritev int) {
 
 	postaje := make(map[string]vreme.Postaja)
-
-	minTemp := -50.0
-	maxTemp := 50.0
-	stMeritev := 3
 
 	vreme.DodajPostajo(postaje, "LJ01", "Ljubljana Bežigrad", "Slovenija")
 	for _, t := range []float64{20.5, 21.0, 19.8, 22.1, 23.0} {
@@ -78,4 +78,24 @@ func main() {
 
 	vreme.IzpisPorocila(postaje, stMeritev)
 
+}
+
+func main() {
+	cmd := &cli.Command{
+		Name:  "vremenske-postaje",
+		Usage: "izpis meritev in poročila vremenskih postaj",
+		Flags: []cli.Flag{
+			&cli.Float64Flag{Name: "minTemp", Value: -50, Usage: "najnižja dovoljena temperatura meritve (°C)"},
+			&cli.Float64Flag{Name: "maxTemp", Value: 50, Usage: "najvišja dovoljena temperatura meritve (°C)"},
+			&cli.IntFlag{Name: "stMeritev", Value: 3, Usage: "najmanjše število meritev za izračun statistike"},
+		},
+		Action: func(ctx context.Context, cmd *cli.Command) error {
+			zazeni(cmd.Float64("minTemp"), cmd.Float64("maxTemp"), cmd.Int("stMeritev"))
+			return nil
+		},
+	}
+
+	if err := cmd.Run(context.Background(), os.Args); err != nil {
+		log.Fatal(err)
+	}
 }
